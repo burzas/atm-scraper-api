@@ -1,0 +1,71 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: ATM app
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths
+basePath: /
+#
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /atms:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: atms
+    get:
+      description: Returns 5 closest atms from address
+      # used as the method name of the controller
+      operationId: atms
+      security:
+        - APIKeyHeader: []
+      parameters:
+        - name: address
+          in: query
+          description: The address
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/AtmsResponse"
+        "401":
+          description: Not authenticated
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  AtmsResponse:
+    required:
+      - atms
+    properties:
+      atms:
+        type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+
+securityDefinitions:
+  APIKeyHeader:
+    type: apiKey
+    in: header
+    name: ApiKey
+  

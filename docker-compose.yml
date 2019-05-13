@@ -1,0 +1,18 @@
+version: "3"
+services:
+  nightmare:
+    container_name: nightmare
+    build:
+      context: ./nightmare
+      dockerfile: Dockerfile
+    ports:
+      - "9999:9999"
+  swagger-node:
+    container_name: swagger-node
+    build:
+      context: ./swagger
+      dockerfile: Dockerfile
+    links:
+      - nightmare:nightmare
+    ports:
+      - "8080:8080"
